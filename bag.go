@@ -110,3 +110,13 @@ func (bag *Bag) Range(f func(index int, p interface{}) (stopIteration bool)) {
 		return f(index, p)
 	})
 }
+
+// Length 长度。
+func (bag *Bag) Length() int {
+	var length int
+	bag.Range(func(index int, p interface{}) (stopIteration bool) {
+		length++
+		return false
+	})
+	return length
+}

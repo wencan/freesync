@@ -18,8 +18,8 @@ func TestSlice_Append(t *testing.T) {
 			t.Fatal()
 		}
 	}
-	// length := slice.Length()
-	// assert.Equal(t, 102400, length)
+	length := slice.Length()
+	assert.Equal(t, 102400, length)
 
 	for i := 0; i < 102400; i++ {
 		got, _ := slice.Load(i).(int)
@@ -71,8 +71,8 @@ func TestSlice_ConcurrentlyAppend(t *testing.T) {
 
 	wg.Wait()
 
-	// length := slice.Length()
-	// assert.Equal(t, 500*10000, length)
+	length := slice.Length()
+	assert.Equal(t, 500*10000, length)
 }
 
 func TestSlice_Range(t *testing.T) {
@@ -81,8 +81,8 @@ func TestSlice_Range(t *testing.T) {
 	for i := 0; i < 10240; i++ {
 		slice.Append(i)
 	}
-	// length := slice.Length()
-	// assert.Equal(t, 10240, length)
+	length := slice.Length()
+	assert.Equal(t, 10240, length)
 
 	var count int
 	slice.Range(func(index int, p interface{}) (stopIteration bool) {
@@ -112,8 +112,8 @@ func TestSlice_UpdateAt(t *testing.T) {
 		assert.Equal(t, i, old)
 	}
 
-	// length := slice.Length()
-	// assert.Equal(t, 10240, length)
+	length := slice.Length()
+	assert.Equal(t, 10240, length)
 
 	for i := 0; i < 10240; i++ {
 		num, _ := slice.Load(i).(int)
@@ -195,8 +195,8 @@ func TestSlice_ConcurrentlyAppendAndUpdateAt(t *testing.T) {
 	wg.Wait()
 
 	// 检查
-	// length := slice.Length()
-	// assert.Equal(t, 500*10000, length)
+	length := slice.Length()
+	assert.Equal(t, 500*10000, length)
 	slice.Range(func(index int, p interface{}) (stopIteration bool) {
 		num, _ := p.(int)
 		assert.Equal(t, index*10, num)

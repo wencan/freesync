@@ -30,6 +30,7 @@ func TestBag(t *testing.T) {
 		index := bag.Add(i)
 		delIndexes = append(delIndexes, index)
 	}
+	assert.Equal(t, 100, bag.Length())
 
 	// 输出全部
 	all := getAll()
@@ -56,6 +57,7 @@ func TestBag(t *testing.T) {
 	}
 	sort.Ints(want)
 	assert.Equal(t, want, all)
+	assert.Equal(t, 90, bag.Length())
 
 	// 继续添加
 	for i := 100; i < 200; i++ {
@@ -72,6 +74,7 @@ func TestBag(t *testing.T) {
 	}
 	sort.Ints(want)
 	assert.Equal(t, want, all)
+	assert.Equal(t, 190, bag.Length())
 }
 
 func TestBagConcurrentlyUpdate(t *testing.T) {
@@ -107,6 +110,9 @@ func TestBagConcurrentlyUpdate(t *testing.T) {
 	}()
 
 	wg.Wait()
+
+	// 检查长度
+	assert.Equal(t, big, bag.Length())
 
 	// 遍历检查
 	all := make([]int, 0, big)
@@ -172,4 +178,6 @@ func TestBagConcurrentlyUpdateAndRange(t *testing.T) {
 		}()
 	}
 	wg2.Wait()
+
+	assert.Equal(t, 0, bag.Length())
 }

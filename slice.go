@@ -75,15 +75,15 @@ func (slice *Slice) Range(f func(index int, p interface{}) (stopIteration bool))
 	store.Range(f)
 }
 
-// // Length 长度。
-// // 在并发Append的场景下，这个长度并不可靠。因为Append时，先增加长度，再存数据。可能长度增加了，对应的数据还没存。
-// func (slice *Slice) Length() int {
-// 	store, _ := slice.store.Load().(*lockfree.Slice)
-// 	if store == nil {
-// 		return 0
-// 	}
-// 	return store.Length()
-// }
+// Length 长度。
+func (slice *Slice) Length() int {
+	var length int
+	slice.Range(func(index int, p interface{}) (stopIteration bool) {
+		length++
+		return false
+	})
+	return length
+}
 
 // UpdateAt 更新下标位置上的值，返回旧值。
 func (slice *Slice) UpdateAt(index int, p interface{}) (old interface{}) {

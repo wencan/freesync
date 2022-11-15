@@ -142,3 +142,13 @@ func (s *Slice) Range(f func(index int, p interface{}) (stopIteration bool)) {
 		})
 	}
 }
+
+// Length 长度。
+func (s *Slice) Length() int {
+	var length int
+	s.Range(func(index int, p interface{}) (stopIteration bool) {
+		length++
+		return false
+	})
+	return length
+}

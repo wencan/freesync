@@ -16,6 +16,7 @@ func TestLimitedSlice(t *testing.T) {
 		assert.True(t, ok)
 		assert.Equal(t, i, index)
 	}
+	assert.Equal(t, 10, slice.Length())
 
 	_, ok := slice.Append(11)
 	assert.False(t, ok)
@@ -43,6 +44,8 @@ func TestLimitedSlice_ConcurrentlyAppend(t *testing.T) {
 	}
 	wg.Wait()
 
+	assert.Equal(t, 500*10000, slice.Length())
+
 	// 空间满后，失败的append
 	wg.Add(500)
 	for i := 0; i < 500; i++ {
@@ -56,6 +59,8 @@ func TestLimitedSlice_ConcurrentlyAppend(t *testing.T) {
 		}()
 	}
 	wg.Wait()
+
+	assert.Equal(t, 500*10000, slice.Length())
 }
 
 func TestLimitedSlice_ConcurrentlyAppend2(t *testing.T) {
