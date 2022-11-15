@@ -19,8 +19,9 @@ type Slice struct {
 	capacity int
 }
 
-// Grow 返回一个新的容量更大的Slice对象，新Slice对象会拥有原数组和新数组。
-func (s *Slice) Grow() *Slice {
+// Grow 返回一个新的容量更大的Slice对象，和增加的容量。
+// 原Slice对象不变。返回的新Slice对象会拥有原Slice的数据和新增的空间。
+func (s *Slice) Grow() (*Slice, int) {
 	// 最后一个数组的容量
 	var lastCapacity int
 	if len(s.limitedSlices) > 0 {
@@ -57,7 +58,12 @@ func (s *Slice) Grow() *Slice {
 		slicesStartIndex: append(s.slicesStartIndex, s.capacity),
 		capacity:         s.capacity + tailCapacity,
 	}
-	return newSlice
+	return newSlice, tailCapacity
+}
+
+// Capacity 容量。
+func (s *Slice) Capacity() int {
+	return s.capacity
 }
 
 // slicesPostion 根据下标，计算元素存储在数组切片中的位置。

@@ -47,7 +47,7 @@ func (slice *Slice) Append(p interface{}) int {
 	}
 
 	// 增加容量后再append
-	newStore := store.Grow()
+	newStore, _ := store.Grow()
 	index, ok := newStore.Append(p)
 	if !ok {
 		panic("impossibility")

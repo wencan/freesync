@@ -37,7 +37,7 @@ func NewLimitedSlice(capacity int) *LimitedSlice {
 	}
 }
 
-// Capacity
+// Capacity 容量。
 func (slice *LimitedSlice) Capacity() int {
 	return slice.capacity
 }
