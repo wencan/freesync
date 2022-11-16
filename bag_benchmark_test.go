@@ -2,8 +2,56 @@ package freesync
 
 import (
 	"sync"
+	"sync/atomic"
 	"testing"
 )
+
+func BenchmarkBagAdd(b *testing.B) {
+	bag := NewBag()
+
+	var number uint64
+
+	b.ResetTimer()
+	b.RunParallel(func(p *testing.PB) {
+		for p.Next() {
+			i := atomic.AddUint64(&number, 1)
+			bag.Add(i)
+		}
+	})
+}
+
+func BenchmarkSyncMapAdd(b *testing.B) {
+	var mapping sync.Map
+
+	var number uint64
+
+	b.ResetTimer()
+	b.RunParallel(func(p *testing.PB) {
+		for p.Next() {
+			i := atomic.AddUint64(&number, 1)
+
+			mapping.Store(i, i)
+		}
+	})
+}
+
+func BenchmarkMutexMapAdd(b *testing.B) {
+	mapping := make(map[uint64]uint64)
+	var mu sync.Mutex
+
+	var number uint64
+
+	b.ResetTimer()
+	b.RunParallel(func(p *testing.PB) {
+		for p.Next() {
+			i := atomic.AddUint64(&number, 1)
+
+			mu.Lock()
+			mapping[i] = i
+			mu.Unlock()
+		}
+	})
+}
 
 func BenchmarkBagWrite(b *testing.B) {
 	bag := NewBag()
@@ -41,6 +89,33 @@ func BenchmarkSyncMapWrite(b *testing.B) {
 
 			delI := <-ch
 			mapping.Delete(delI)
+		}
+	})
+}
+
+func BenchmarkMutexMapWrite(b *testing.B) {
+	var mu sync.Mutex
+	mapping := make(map[int]int)
+
+	ch := make(chan int, 10000000)
+
+	b.ResetTimer()
+	b.RunParallel(func(p *testing.PB) {
+		var i int
+		for p.Next() {
+			mu.Lock()
+			mapping[i] = i
+			mu.Unlock()
+
+			ch <- i
+
+			i++
+
+			i = <-ch
+
+			mu.Lock()
+			delete(mapping, i)
+			mu.Unlock()
 		}
 	})
 }
